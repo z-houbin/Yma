@@ -135,7 +135,6 @@ public class QQMusic extends MusicModule {
 
     @Override
     public void download(final int... index) {
-        super.download(index);
         new Thread() {
             @Override
             public void run() {
@@ -155,11 +154,5 @@ public class QQMusic extends MusicModule {
                 }
             }
         }.start();
-    }
-
-    @Override
-    public void download() {
-        super.download();
-        download(0);
     }
 }

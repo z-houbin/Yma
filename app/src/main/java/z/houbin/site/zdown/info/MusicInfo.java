@@ -11,7 +11,7 @@ public class MusicInfo extends BaseInfo{
     public String singerId;
     public String singerMid;
     public String singerName;
-    public HashMap<String,String> url = new HashMap<>();
+    public HashMap<String,String> urls = new HashMap<>();
     public String songId;
     public String songMid;
     public String songName;

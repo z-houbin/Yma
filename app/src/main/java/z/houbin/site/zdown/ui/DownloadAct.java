@@ -36,6 +36,11 @@ public class DownloadAct extends Activity implements DownloadManager.DownloadSta
     }
 
     @Override
+    public void complete(BaseDownloadTask task) {
+
+    }
+
+    @Override
     public void update(BaseDownloadTask task) {
 
     }

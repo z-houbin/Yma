@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -24,10 +25,10 @@ import z.houbin.site.zdown.util.DownloadManager;
 
 //https://y.qq.com/n/yqq/album/001BQNXZ2QkzMh.html#stat=y_new.album_lib.album_name
 //https://y.qq.com/n/yqq/album/004AhJHV3slLjN.html
-public class QQMusic_Album extends MusicModule {
+public class QQMusicAlbum extends MusicModule {
     private static final String URL_INFO = "http://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg?inCharset=utf8&outCharset=utf-8&albummid=%s";
 
-    public QQMusic_Album(String input) {
+    public QQMusicAlbum(String input) {
         super(input);
         Headers.Builder headerBuilder = new Headers.Builder();
         headerBuilder.add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*");
@@ -69,16 +70,16 @@ public class QQMusic_Album extends MusicModule {
     @Override
     public void doInThread() {
         super.doInThread();
-        if(mInput.contains("url.cn")){
+        if (mInput.contains("url.cn")) {
             try {
                 Document document = Jsoup.connect(mInput).get();
                 mInput = document.location();
-                mInput = String.format(Locale.CHINA,"https://y.qq.com/n/yqq/album/%s_num.html",document.location().split("\\?")[1].split("&")[0].split("=")[1]);
+                mInput = String.format(Locale.CHINA, "https://y.qq.com/n/yqq/album/%s_num.html", document.location().split("\\?")[1].split("&")[0].split("=")[1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if(mInput.contains("_num.html")){
+        if (mInput.contains("_num.html")) {
             //手机QQ音乐专辑分享
             try {
                 Request request = new Request.Builder().get().url(mInput).headers(mHeaders).build();
@@ -155,6 +156,30 @@ public class QQMusic_Album extends MusicModule {
     }
 
     @Override
+    public void downloadAll() {
+        super.downloadAll();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                List<MusicInfo> musicInfos = getMusicInfos();
+                for (MusicInfo info : musicInfos) {
+                    HashMap<String, String> musicUrl = getMusicUrl(info);
+                    if (info.sizeflac != 0 && musicUrl.containsKey("flac") && !TextUtils.isEmpty(musicUrl.get("flac"))) {
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("flac"), ".flac");
+                    } else if (info.sizeApe != 0 && musicUrl.containsKey("ape") && !TextUtils.isEmpty(musicUrl.get("ape"))) {
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("ape"), ".ape");
+                    } else if (info.size320 != 0 && musicUrl.containsKey("320") && !TextUtils.isEmpty(musicUrl.get("320"))) {
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("320"), ".mp3");
+                    } else if (info.size128 != 0 && musicUrl.containsKey("128") && !TextUtils.isEmpty(musicUrl.get("128"))) {
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("128"), ".mp3");
+                    }
+                }
+            }
+        }.start();
+    }
+
+    @Override
     public void download(final int... index) {
         super.download(index);
         new Thread() {
@@ -165,31 +190,16 @@ public class QQMusic_Album extends MusicModule {
                     MusicInfo info = musicInfos.get(i);
                     HashMap<String, String> musicUrl = getMusicUrl(musicInfos.get(i));
                     if (info.sizeflac != 0 && musicUrl.containsKey("flac") && !TextUtils.isEmpty(musicUrl.get("flac"))) {
-                        DownloadManager.getImpl().startDownload(info,musicUrl.get("flac"), ".flac");
-                    } else if (info.sizeApe != 0 &&musicUrl.containsKey("ape") && !TextUtils.isEmpty(musicUrl.get("ape"))) {
-                        DownloadManager.getImpl().startDownload(info,musicUrl.get("ape"), ".ape");
-                    } else if (info.size320 !=0 && musicUrl.containsKey("320") && !TextUtils.isEmpty(musicUrl.get("320"))) {
-                        DownloadManager.getImpl().startDownload(info,musicUrl.get("320"), ".mp3");
-                    }else if(info.size128 !=0 && musicUrl.containsKey("128") && !TextUtils.isEmpty(musicUrl.get("128"))){
-                        DownloadManager.getImpl().startDownload(info,musicUrl.get("128"), ".mp3");
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("flac"), ".flac");
+                    } else if (info.sizeApe != 0 && musicUrl.containsKey("ape") && !TextUtils.isEmpty(musicUrl.get("ape"))) {
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("ape"), ".ape");
+                    } else if (info.size320 != 0 && musicUrl.containsKey("320") && !TextUtils.isEmpty(musicUrl.get("320"))) {
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("320"), ".mp3");
+                    } else if (info.size128 != 0 && musicUrl.containsKey("128") && !TextUtils.isEmpty(musicUrl.get("128"))) {
+                        DownloadManager.getImpl().startDownload(info, musicUrl.get("128"), ".mp3");
                     }
-//                    for (String key : musicUrl.keySet()) {
-//                        String suffix = ".mp3";
-//                        if (key.equals("128") || key.equals("320")) {
-//                            suffix = ".mp3";
-//                        } else {
-//                            suffix = "." + key;
-//                        }
-//                        DownloadManager.getImpl().startDownload(musicUrl.get(key), suffix);
-//                    }
                 }
             }
         }.start();
-    }
-
-    @Override
-    public void download() {
-        super.download();
-        download(0);
     }
 }

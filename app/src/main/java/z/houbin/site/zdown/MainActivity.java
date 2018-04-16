@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -22,14 +24,14 @@ import android.widget.Toast;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import z.houbin.site.zdown.info.BaseInfo;
-import z.houbin.site.zdown.info.MusicInfo;
 import z.houbin.site.zdown.listener.LoadCallBack;
 import z.houbin.site.zdown.module.BaseModule;
 import z.houbin.site.zdown.module.DouYin;
@@ -39,7 +41,8 @@ import z.houbin.site.zdown.module.MeiPai;
 import z.houbin.site.zdown.module.MiaoPai;
 import z.houbin.site.zdown.module.Music.MusicModule;
 import z.houbin.site.zdown.module.Music.QQMusic;
-import z.houbin.site.zdown.module.Music.QQMusic_Album;
+import z.houbin.site.zdown.module.Music.QQMusicPlayList;
+import z.houbin.site.zdown.module.Music.QQMusicAlbum;
 import z.houbin.site.zdown.module.TikTok;
 import z.houbin.site.zdown.module.XiGua;
 import z.houbin.site.zdown.ui.ShowAct;
@@ -118,10 +121,18 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
                 XiGua xiGua = new XiGua(input);
                 xiGua.doInBackground();
                 xiGua.setLoadListener(this);
-            } else if (input.contains("y.qq.com/n/yqq/album") || input.contains("url.cn")) {
-                QQMusic_Album qqMusicAlbum = new QQMusic_Album(input);
-                qqMusicAlbum.doInBackground();
-                qqMusicAlbum.setLoadListener(this);
+            } else if (input.contains("y.qq.com") || input.contains("url.cn")) {
+                if (input.contains("/n/yqq/album") || input.contains("url.cn")) {
+                    //专辑
+                    QQMusicAlbum qqMusicAlbum = new QQMusicAlbum(input);
+                    qqMusicAlbum.doInBackground();
+                    qqMusicAlbum.setLoadListener(this);
+                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist")) {
+                    //歌单
+                    QQMusicPlayList musicPlayList = new QQMusicPlayList(input);
+                    musicPlayList.doInBackground();
+                    musicPlayList.setLoadListener(this);
+                }
             } else if (input.contains("www.tiktokv.com")) {
                 TikTok tikTok = new TikTok(input);
                 tikTok.doInBackground();
@@ -175,14 +186,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
 
     private void showMusicList(final MusicModule module) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        List<MusicInfo> infos = module.getMusicInfos();
-        if (infos.isEmpty()) {
-            return;
-        }
-        CharSequence[] items = new CharSequence[infos.size()];
-        for (int i = 0; i < infos.size(); i++) {
-            items[i] = infos.get(i).songName + "/" + infos.get(i).singerName;
-        }
+        CharSequence[] items = module.getShowList();
         final List<Integer> checkList = new ArrayList<>();
         builder.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
@@ -208,6 +212,12 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
                 module.download(index);
             }
         });
+        builder.setNegativeButton("全部下载", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                module.downloadAll();
+            }
+        });
         builder.create().show();
     }
 
@@ -222,8 +232,24 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
     }
 
     @Override
-    public void update(BaseDownloadTask task) {
+    public void complete(BaseDownloadTask task) {
+        try {
+            String path = task.getPath();
+            if (path.endsWith(".jpg") || path.endsWith(".png") | path.endsWith(".gif") || path.endsWith(".webp")) {
+                //插入图片
+                MediaStore.Images.Media.insertImage(getContentResolver(), path, "title", "description");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(task.getPath()))));
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(task.getPath()).getParentFile())));
+        Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void update(BaseDownloadTask task) {
+        System.out.println();
     }
 
     @Override

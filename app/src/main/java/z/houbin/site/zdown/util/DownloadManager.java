@@ -94,12 +94,12 @@ public class DownloadManager {
 
         @Override
         protected void blockComplete(BaseDownloadTask task) {
-            blockComplete(task);
+            listBlockComplete(task);
         }
 
         @Override
         protected void completed(BaseDownloadTask task) {
-            update(task);
+            listComplete(task);
         }
 
         @Override
@@ -118,10 +118,17 @@ public class DownloadManager {
         }
     };
 
-    private void blockComplete(final BaseDownloadTask task) {
+    private void listBlockComplete(final BaseDownloadTask task) {
         final List<DownloadStatusUpdater> updaterListCopy = (List<DownloadStatusUpdater>) updaterList.clone();
         for (DownloadStatusUpdater downloadStatusUpdater : updaterListCopy) {
             downloadStatusUpdater.blockComplete(task);
+        }
+    }
+
+    private void listComplete(final BaseDownloadTask task) {
+        final List<DownloadStatusUpdater> updaterListCopy = (List<DownloadStatusUpdater>) updaterList.clone();
+        for (DownloadStatusUpdater downloadStatusUpdater : updaterListCopy) {
+            downloadStatusUpdater.complete(task);
         }
     }
 
@@ -134,7 +141,7 @@ public class DownloadManager {
 
     public interface DownloadStatusUpdater {
         void blockComplete(BaseDownloadTask task);
-
+        void complete(BaseDownloadTask task);
         void update(BaseDownloadTask task);
     }
 }
