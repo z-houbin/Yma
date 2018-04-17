@@ -159,7 +159,7 @@ public class QQMusicPlayList extends MusicModule {
             public void run() {
                 super.run();
                 for (int i : index) {
-                    MusicInfo info = getMusicInfos().get(i);
+                    MusicInfo info = (MusicInfo) getMusicInfos().get(i);
                     HashMap<String, String> musicUrl = getMusicUrl(info);
                     if (info.sizeflac != 0 && musicUrl.containsKey("flac") && !TextUtils.isEmpty(musicUrl.get("flac"))) {
                         DownloadManager.getImpl().startDownload(info, musicUrl.get("flac"), ".flac");

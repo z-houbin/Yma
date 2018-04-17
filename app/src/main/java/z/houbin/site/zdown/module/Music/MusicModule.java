@@ -11,7 +11,7 @@ import z.houbin.site.zdown.module.BaseModule;
 import z.houbin.site.zdown.util.DownloadManager;
 
 public abstract class MusicModule extends BaseModule {
-    protected List<MusicInfo> musicInfos = new ArrayList<>();
+    protected List<MusicInfo> musicInfos = new ArrayList<MusicInfo>();
     protected Object data = null;
 
     public MusicModule(String input) {
@@ -31,7 +31,7 @@ public abstract class MusicModule extends BaseModule {
             @Override
             public void run() {
                 super.run();
-                List<MusicInfo> infos = getMusicInfos();
+                List<MusicInfo> infos = (List<MusicInfo>) getMusicInfos();
                 for (MusicInfo info : infos) {
                     HashMap<String, String> musicUrl = getMusicUrl(info);
                     if (info.sizeflac != 0 && musicUrl.containsKey("flac") && !TextUtils.isEmpty(musicUrl.get("flac"))) {
@@ -51,7 +51,8 @@ public abstract class MusicModule extends BaseModule {
     public String[] getShowList() {
         String[] items = new String[musicInfos.size()];
         for (int i = 0; i < musicInfos.size(); i++) {
-            items[i] = musicInfos.get(i).songName + "/" + musicInfos.get(i).singerName;
+            MusicInfo info = (MusicInfo) musicInfos.get(i);
+            items[i] = info.songName + "/" + info.singerName;
         }
         return items;
     }

@@ -39,6 +39,7 @@ import z.houbin.site.zdown.module.Instagram;
 import z.houbin.site.zdown.module.KuaiShou;
 import z.houbin.site.zdown.module.MeiPai;
 import z.houbin.site.zdown.module.MiaoPai;
+import z.houbin.site.zdown.module.Music.Kugou.Kugou;
 import z.houbin.site.zdown.module.Music.MusicModule;
 import z.houbin.site.zdown.module.Music.QQMusic;
 import z.houbin.site.zdown.module.Music.QQMusicPlayList;
@@ -138,9 +139,12 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
                 tikTok.doInBackground();
                 tikTok.setLoadListener(this);
             } else {
-                QQMusic music = new QQMusic(input);
-                music.search();
-                music.setLoadListener(this);
+                Kugou kugou = new Kugou(input);
+                kugou.search();
+                kugou.setLoadListener(this);
+//                QQMusic music = new QQMusic(input);
+//                music.search();
+//                music.setLoadListener(this);
             }
         }
     }
