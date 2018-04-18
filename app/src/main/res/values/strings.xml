@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Yma</string>
     <string name="url"><![CDATA[https://y.qq.com/n/yqq/playlist/1895857981.html#stat=y_new.profile.create_playlist.love.click&dirid=201]]></string>
-    <string name="support_list">支持列表: instagram, 美拍, 秒排, 抖音, 快手, 西瓜视频,QQ音乐歌单,QQ音乐专辑,QQ音乐搜索</string>
+    <string name="support_list">支持列表: instagram, 美拍, 秒拍, 抖音, 快手, 西瓜视频,QQ音乐歌单,QQ音乐专辑,QQ音乐搜索</string>
+    <string name="drawer_open">打开</string>
+    <string name="drawer_close">关闭</string>
 </resources>

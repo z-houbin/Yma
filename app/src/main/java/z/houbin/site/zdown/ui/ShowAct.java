@@ -1,6 +1,7 @@
 package z.houbin.site.zdown.ui;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,7 +27,6 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -39,10 +39,18 @@ public class ShowAct extends AppCompatActivity implements AdapterView.OnItemClic
     private RecyclerView list;
     private GridLayoutManager manager;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_show);
+
+        try {
+            LayoutInflater.from(createPackageContext("", 0));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
         list = findViewById(R.id.list);
         manager = new GridLayoutManager(getApplicationContext(), 3);

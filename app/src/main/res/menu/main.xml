@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_qq_music"
+        android:icon="@drawable/icon_qqmusic"
+        android:iconTint="@null"
+        android:iconTintMode="screen"
+        android:title="QQ音乐(歌单,专辑,搜索)"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_netease"
+        android:icon="@drawable/icon_netease"
+        android:iconTint="@null"
+        android:iconTintMode="screen"
+        android:title="网易云(歌单,专辑,搜索)"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_douyin"
+        android:icon="@drawable/icon_douyin"
+        android:iconTint="@null"
+        android:iconTintMode="screen"
+        android:title="抖音(无水印)"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_meipai"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:iconTint="@null"
+        android:iconTintMode="screen"
+        android:title="美11拍"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_miaopai"
+        android:icon="@drawable/icon_miaopai"
+        android:iconTint="@null"
+        android:iconTintMode="screen"
+        android:title="秒拍"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_kuaishou"
+        android:icon="@drawable/icon_kuaishou"
+        android:iconTint="@null"
+        android:iconTintMode="screen"
+        android:title="快手"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/xigua"
+        android:icon="@drawable/icon_xigua"
+        android:iconTint="@null"
+        android:iconTintMode="screen"
+        android:title="西瓜"
+        app:showAsAction="always" />
+</menu>

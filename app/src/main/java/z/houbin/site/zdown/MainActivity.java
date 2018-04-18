@@ -15,14 +15,22 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,40 +39,80 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import z.houbin.site.zdown.adapter.MenuAdapter;
 import z.houbin.site.zdown.info.BaseInfo;
 import z.houbin.site.zdown.listener.LoadCallBack;
 import z.houbin.site.zdown.module.BaseModule;
 import z.houbin.site.zdown.module.DouYin;
-import z.houbin.site.zdown.module.Instagram;
 import z.houbin.site.zdown.module.KuaiShou;
 import z.houbin.site.zdown.module.MeiPai;
 import z.houbin.site.zdown.module.MiaoPai;
 import z.houbin.site.zdown.module.Music.Kugou.Kugou;
 import z.houbin.site.zdown.module.Music.MusicModule;
-import z.houbin.site.zdown.module.Music.QQMusic;
-import z.houbin.site.zdown.module.Music.QQMusicPlayList;
 import z.houbin.site.zdown.module.Music.QQMusicAlbum;
+import z.houbin.site.zdown.module.Music.QQMusicPlayList;
 import z.houbin.site.zdown.module.TikTok;
 import z.houbin.site.zdown.module.XiGua;
+import z.houbin.site.zdown.ui.InstagramWebActivity;
 import z.houbin.site.zdown.ui.ShowAct;
 import z.houbin.site.zdown.util.DownloadManager;
 
 
-public class MainActivity extends AppCompatActivity implements LoadCallBack, DownloadManager.DownloadStatusUpdater {
+public class MainActivity extends AppCompatActivity implements LoadCallBack, DownloadManager.DownloadStatusUpdater, AdapterView.OnItemClickListener {
     private EditText mInput;
     private Handler handler = new Handler();
+    private ActionBarDrawerToggle drawerToggle;
+    private DrawerLayout drawerLayout;
+    private TextView tip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FileDownloader.setup(getApplicationContext());
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setHomeButtonEnabled(true);
+        }
+
+        //实现左侧home图标“菜单”样式与“返回”样式的动画切换(需要在xml中配置相关样式)
+        drawerLayout = findViewById(R.id.drawer);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close);
+        drawerLayout.addDrawerListener(drawerToggle);
 
         mInput = findViewById(R.id.edit);
         DownloadManager.getImpl().addUpdater(this);
 
         checkPermission();
+
+        ListView menuList = findViewById(R.id.menu);
+        menuList.setAdapter(new MenuAdapter(getApplicationContext()));
+        menuList.setOnItemClickListener(this);
+
+        tip = findViewById(R.id.tip);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            if (drawerLayout.isDrawerOpen(Gravity.START)) {
+                drawerLayout.closeDrawer(Gravity.START);
+            } else {
+                drawerLayout.openDrawer(Gravity.START);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
     }
 
     @Override
@@ -99,9 +147,12 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
                 Toast.makeText(getApplicationContext(),"不支持短链接,请用浏览器打开短链接后复制网址",Toast.LENGTH_LONG).show();
             } else*/
             if (input.contains("www.instagram.com")) {
-                Instagram instagram = new Instagram(input);
-                instagram.doInBackground();
-                instagram.setLoadListener(this);
+//                Instagram instagram = new Instagram(input);
+//                instagram.doInBackground();
+//                instagram.setLoadListener(this);
+
+                Intent intent = new Intent(getApplicationContext(), InstagramWebActivity.class);
+                startActivity(intent);
             } else if (input.contains("www.meipai.com")) {
                 MeiPai meiPai = new MeiPai(input);
                 meiPai.doInBackground();
@@ -293,6 +344,33 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
     public void clear(View view) {
         if (mInput != null) {
             mInput.getEditableText().clear();
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        drawerLayout.closeDrawer(Gravity.START);
+        switch (position) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                Intent intent = new Intent(getApplicationContext(), InstagramWebActivity.class);
+                startActivity(intent);
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
         }
     }
 }
