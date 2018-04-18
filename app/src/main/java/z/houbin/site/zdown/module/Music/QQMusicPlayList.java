@@ -1,14 +1,11 @@
 package z.houbin.site.zdown.module.Music;
 
-import android.text.TextUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,7 +36,8 @@ public class QQMusicPlayList extends MusicModule {
     }
 
     @Override
-    public HashMap<String, String> getMusicUrl(MusicInfo info) {
+    public Object getSongInfo(int index) {
+        MusicInfo info = musicInfos.get(index);
         String url = "http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&inCharset=utf8&outCharset=utf-8&format=json&guid=" + info.docid;
         Request request = new Request.Builder().get().url(url).build();
         try {
@@ -47,21 +45,19 @@ public class QQMusicPlayList extends MusicModule {
             String json = response.body().string();
             JSONObject jsonObject = new JSONObject(json);
             String key = jsonObject.getString("key");
-
-            String _flac = String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/F000%s.flac?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
-            String _ape = String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/A000%s.ape?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
-            String _128 = String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/M500%s.mp3?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
-            String _320 = String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/M800%s.mp3?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
-            HashMap<String, String> map = new HashMap<>();
-            map.put("128", _128);
-            map.put("320", _320);
-            map.put("ape", _ape);
-            map.put("flac", _flac);
-            return map;
+            if (info.sizeflac != 0) {
+                return String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/F000%s.flac?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
+            } else if (info.sizeApe != 0) {
+                return String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/A000%s.ape?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
+            } else if (info.size320 != 0) {
+                return String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/M800%s.mp3?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
+            } else if (info.size128 != 0) {
+                return String.format(Locale.CHINA, "http://ws.stream.qqmusic.qq.com/M500%s.mp3?vkey=%s&guid=%s&fromtag=53", info.songMid, key, info.docid);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return super.getMusicUrl(info);
+        return null;
     }
 
     @Override
@@ -119,7 +115,7 @@ public class QQMusicPlayList extends MusicModule {
     }
 
     @Override
-    public List<MusicInfo> getMusicInfos() {
+    public void initMusicInfos() {
         if (musicInfos.isEmpty()) {
             List<QQMusicPlayListInfo.CdlistBean.SonglistBean> songList = getSongList();
             for (QQMusicPlayListInfo.CdlistBean.SonglistBean song : songList) {
@@ -142,12 +138,11 @@ public class QQMusicPlayList extends MusicModule {
                 musicInfos.add(musicInfo);
             }
         }
-        return super.getMusicInfos();
     }
 
     @Override
     public void downloadAll() {
-        getMusicInfos();
+        initMusicInfos();
         super.downloadAll();
     }
 
@@ -159,16 +154,14 @@ public class QQMusicPlayList extends MusicModule {
             public void run() {
                 super.run();
                 for (int i : index) {
-                    MusicInfo info = (MusicInfo) getMusicInfos().get(i);
-                    HashMap<String, String> musicUrl = getMusicUrl(info);
-                    if (info.sizeflac != 0 && musicUrl.containsKey("flac") && !TextUtils.isEmpty(musicUrl.get("flac"))) {
-                        DownloadManager.getImpl().startDownload(info, musicUrl.get("flac"), ".flac");
-                    } else if (info.sizeApe != 0 && musicUrl.containsKey("ape") && !TextUtils.isEmpty(musicUrl.get("ape"))) {
-                        DownloadManager.getImpl().startDownload(info, musicUrl.get("ape"), ".ape");
-                    } else if (info.size320 != 0 && musicUrl.containsKey("320") && !TextUtils.isEmpty(musicUrl.get("320"))) {
-                        DownloadManager.getImpl().startDownload(info, musicUrl.get("320"), ".mp3");
-                    } else if (info.size128 != 0 && musicUrl.containsKey("128") && !TextUtils.isEmpty(musicUrl.get("128"))) {
-                        DownloadManager.getImpl().startDownload(info, musicUrl.get("128"), ".mp3");
+                    MusicInfo info = (MusicInfo) musicInfos.get(i);
+                    String songUrl = getSongInfo(i).toString();
+                    if (songUrl.contains("ape")) {
+                        DownloadManager.getImpl().startDownload(info, songUrl, ".ape");
+                    } else if (songUrl.contains("flac")) {
+                        DownloadManager.getImpl().startDownload(info, songUrl, ".flace");
+                    } else {
+                        DownloadManager.getImpl().startDownload(info, songUrl, ".mp3");
                     }
                 }
             }

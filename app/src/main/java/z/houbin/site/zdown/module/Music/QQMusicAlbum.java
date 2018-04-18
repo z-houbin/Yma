@@ -42,7 +42,8 @@ public class QQMusicAlbum extends MusicModule {
     }
 
     @Override
-    public HashMap<String, String> getMusicUrl(MusicInfo info) {
+    public Object getSongInfo(int index) {
+        MusicInfo info = musicInfos.get(index);
         String url = "http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&inCharset=utf8&outCharset=utf-8&format=json&guid=" + info.docid;
         Request request = new Request.Builder().get().url(url).build();
         try {
@@ -64,7 +65,7 @@ public class QQMusicAlbum extends MusicModule {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return super.getMusicUrl(info);
+        return super.getSongInfo(index);
     }
 
     @Override
@@ -162,9 +163,9 @@ public class QQMusicAlbum extends MusicModule {
             @Override
             public void run() {
                 super.run();
-                List<MusicInfo> musicInfos = getMusicInfos();
-                for (MusicInfo info : musicInfos) {
-                    HashMap<String, String> musicUrl = getMusicUrl(info);
+                for (int i = 0; i < musicInfos.size(); i++) {
+                    MusicInfo info = musicInfos.get(i);
+                    HashMap<String, String> musicUrl = (HashMap<String, String>) getSongInfo(i);
                     if (info.sizeflac != 0 && musicUrl.containsKey("flac") && !TextUtils.isEmpty(musicUrl.get("flac"))) {
                         DownloadManager.getImpl().startDownload(info, musicUrl.get("flac"), ".flac");
                     } else if (info.sizeApe != 0 && musicUrl.containsKey("ape") && !TextUtils.isEmpty(musicUrl.get("ape"))) {
@@ -188,7 +189,7 @@ public class QQMusicAlbum extends MusicModule {
                 super.run();
                 for (int i : index) {
                     MusicInfo info = musicInfos.get(i);
-                    HashMap<String, String> musicUrl = getMusicUrl(musicInfos.get(i));
+                    HashMap<String, String> musicUrl = (HashMap<String, String>) getSongInfo(i);
                     if (info.sizeflac != 0 && musicUrl.containsKey("flac") && !TextUtils.isEmpty(musicUrl.get("flac"))) {
                         DownloadManager.getImpl().startDownload(info, musicUrl.get("flac"), ".flac");
                     } else if (info.sizeApe != 0 && musicUrl.containsKey("ape") && !TextUtils.isEmpty(musicUrl.get("ape"))) {

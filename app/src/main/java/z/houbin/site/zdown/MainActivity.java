@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
 
     @Override
     public void update(BaseDownloadTask task) {
-        System.out.println();
+        System.out.println(task.getSmallFileTotalBytes() + " / " + task.getSmallFileSoFarBytes());
     }
 
     @Override

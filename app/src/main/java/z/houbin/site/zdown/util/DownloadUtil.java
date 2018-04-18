@@ -34,8 +34,8 @@ public class DownloadUtil {
         fileName.append(day);
         fileName.append("/");
         String name = info.songName + "-" + info.singerName;
+        name = HTMLSpirit.delHTMLTag(name);
         if (name.contains("/")) {
-            ;
             name = name.replaceAll("/", "&");
         }
         fileName.append(name);
