@@ -45,13 +45,6 @@ public class ShowAct extends AppCompatActivity implements AdapterView.OnItemClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_show);
 
-        try {
-            LayoutInflater.from(createPackageContext("", 0));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
         list = findViewById(R.id.list);
         manager = new GridLayoutManager(getApplicationContext(), 3);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

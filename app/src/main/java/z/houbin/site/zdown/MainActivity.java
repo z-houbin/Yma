@@ -49,8 +49,10 @@ import z.houbin.site.zdown.module.MeiPai;
 import z.houbin.site.zdown.module.MiaoPai;
 import z.houbin.site.zdown.module.Music.Kugou.Kugou;
 import z.houbin.site.zdown.module.Music.MusicModule;
+import z.houbin.site.zdown.module.Music.QMKg;
 import z.houbin.site.zdown.module.Music.QQMusicAlbum;
 import z.houbin.site.zdown.module.Music.QQMusicPlayList;
+import z.houbin.site.zdown.module.Music.QuanMingKg.Kg;
 import z.houbin.site.zdown.module.TikTok;
 import z.houbin.site.zdown.module.XiGua;
 import z.houbin.site.zdown.ui.InstagramWebActivity;
@@ -189,6 +191,11 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
                 TikTok tikTok = new TikTok(input);
                 tikTok.doInBackground();
                 tikTok.setLoadListener(this);
+            }
+            if (input.contains("kg2.qq.com")) {
+                QMKg kg = new QMKg(input);
+                kg.downloadAll();
+                kg.setLoadListener(this);
             } else {
                 Kugou kugou = new Kugou(input);
                 kugou.search();
@@ -304,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
 
     @Override
     public void update(BaseDownloadTask task) {
-        System.out.println(task.getSmallFileTotalBytes() + " / " + task.getSmallFileSoFarBytes());
+        System.out.println(task.getFilename() + " / " + task.getSmallFileTotalBytes() + " / " + task.getSmallFileSoFarBytes());
     }
 
     @Override

@@ -89,16 +89,19 @@ public class Kugou extends MusicModule {
         }
         Gson gson = new GsonBuilder().create();
         KugouSong song = gson.fromJson(html, KugouSong.class);
-        if(TextUtils.isEmpty(song.getData().getPlay_url())){
+        if (TextUtils.isEmpty(song.getData().getPlay_url())) {
             //获取地址
-            song.getData().setPlay_url(getSongUrl(hash));
+            String realUrl = getSongUrl(hash);
+            if (!realUrl.contains("error")) {
+                song.getData().setPlay_url(realUrl);
+            }
         }
         return song;
     }
 
-    private String getSongUrl(String hash){
-        String key = MD5.MD5_32bit(hash+"kgcloud");
-        String url = String.format(Locale.CHINA, URL_SONG, hash,key);
+    private String getSongUrl(String hash) {
+        String key = MD5.MD5_32bit(hash + "kgcloud");
+        String url = String.format(Locale.CHINA, URL_SONG, hash, key);
         Request request = new Request.Builder().get().url(url).build();
         Response response = null;
         try {
@@ -155,7 +158,10 @@ public class Kugou extends MusicModule {
                     info.songName = musicInfo.getSongName();
                     info.singerName = musicInfo.getSingerName();
                     String songUrl = song.getData().getPlay_url();
-                    DownloadManager.getImpl().startDownload(info, song.getData().getPlay_url(), songUrl.substring(songUrl.lastIndexOf(".")));
+                    System.out.println("歌曲地址:" + songUrl);
+                    if (!TextUtils.isEmpty(songUrl)) {
+                        DownloadManager.getImpl().startDownload(info, song.getData().getPlay_url(), songUrl.substring(songUrl.lastIndexOf(".")));
+                    }
                 }
             }
         }.start();
@@ -175,7 +181,10 @@ public class Kugou extends MusicModule {
                     info.songName = bean.getSongName();
                     info.singerName = bean.getSingerName();
                     String songUrl = song.getData().getPlay_url();
-                    DownloadManager.getImpl().startDownload(info, song.getData().getPlay_url(), songUrl.substring(songUrl.lastIndexOf(".")));
+                    System.out.println("歌曲地址:" + songUrl);
+                    if (!TextUtils.isEmpty(songUrl)) {
+                        DownloadManager.getImpl().startDownload(info, song.getData().getPlay_url(), songUrl.substring(songUrl.lastIndexOf(".")));
+                    }
                 }
             }
         }.start();
