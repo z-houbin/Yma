@@ -14,8 +14,8 @@ import z.houbin.site.zdown.R;
 public class MenuAdapter extends BaseAdapter {
     private Context context;
 
-    private String[] menuItems = new String[]{"QQ音乐\n(歌单,专辑,搜索)", "网易云\n(歌单,专辑,搜索)", "抖音(无水印)", "Instagram", "美拍", "秒拍", "快手", "西瓜视频",};
-    private Integer[] menuIcons = new Integer[]{R.drawable.icon_qqmusic, R.drawable.icon_netease, R.drawable.icon_douyin, R.drawable.icon_instagram, R.drawable.icon_meipai, R.drawable.icon_miaopai, R.drawable.icon_kuaishou, R.drawable.icon_xigua};
+    private String[] menuItems = new String[]{"QQ音乐\n(歌单,专辑,搜索)", "网易云\n(歌单,专辑,搜索)", "全民K歌", "抖音(无水印)", "Instagram", "美拍", "秒拍", "快手", "西瓜视频",};
+    private Integer[] menuIcons = new Integer[]{R.drawable.icon_qqmusic, R.drawable.icon_netease, R.drawable.icon_qmkg, R.drawable.icon_douyin, R.drawable.icon_instagram, R.drawable.icon_meipai, R.drawable.icon_miaopai, R.drawable.icon_kuaishou, R.drawable.icon_xigua};
 
     public MenuAdapter(Context context) {
         this.context = context;

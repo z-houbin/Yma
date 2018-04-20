@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -42,16 +43,21 @@ public class QMKg extends MusicModule {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String html = response.body().string();
-                Gson gson = new GsonBuilder().create();
-                Kg kg = gson.fromJson(html, Kg.class);
+                try {
+                    html = html.substring(html.indexOf("{"),html.lastIndexOf("}")+1);
+                    Gson gson = new GsonBuilder().create();
+                    Kg kg = gson.fromJson(html, Kg.class);
 
-                MusicInfo info = new MusicInfo();
-                info.songName = kg.getData().getSong_name();
-                info.singerName = kg.getData().getSinger_name();
-                String songUrl = getM4aUrl(shareid);
-                System.out.println("歌曲地址:" + songUrl);
-                if (!TextUtils.isEmpty(songUrl)) {
-                    DownloadManager.getImpl().startDownload(info, songUrl, songUrl.substring(songUrl.lastIndexOf(".")));
+                    MusicInfo info = new MusicInfo();
+                    info.songName = kg.getData().getSong_name();
+                    info.singerName = kg.getData().getSinger_name();
+                    String songUrl = getM4aUrl(shareid);
+                    System.out.println("歌曲地址:" + songUrl);
+                    if (!TextUtils.isEmpty(songUrl)) {
+                        DownloadManager.getImpl().startDownload(info, songUrl, ".m4a");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });

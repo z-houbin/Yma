@@ -44,10 +44,12 @@ import z.houbin.site.zdown.info.BaseInfo;
 import z.houbin.site.zdown.listener.LoadCallBack;
 import z.houbin.site.zdown.module.BaseModule;
 import z.houbin.site.zdown.module.DouYin;
+import z.houbin.site.zdown.module.Instagram;
 import z.houbin.site.zdown.module.KuaiShou;
 import z.houbin.site.zdown.module.MeiPai;
 import z.houbin.site.zdown.module.MiaoPai;
 import z.houbin.site.zdown.module.Music.Kugou.Kugou;
+import z.houbin.site.zdown.module.Music.Kuwo.Kuwo;
 import z.houbin.site.zdown.module.Music.MusicModule;
 import z.houbin.site.zdown.module.Music.QMKg;
 import z.houbin.site.zdown.module.Music.QQMusicAlbum;
@@ -144,17 +146,15 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
 
     public void download(View view) {
         String input = mInput.getText().toString();
+        new Kuwo("");
         if (!TextUtils.isEmpty(input)) {
            /* if (input.contains("url.cn")) {
                 Toast.makeText(getApplicationContext(),"不支持短链接,请用浏览器打开短链接后复制网址",Toast.LENGTH_LONG).show();
             } else*/
             if (input.contains("www.instagram.com")) {
-//                Instagram instagram = new Instagram(input);
-//                instagram.doInBackground();
-//                instagram.setLoadListener(this);
-
-                Intent intent = new Intent(getApplicationContext(), InstagramWebActivity.class);
-                startActivity(intent);
+                Instagram instagram = new Instagram(input);
+                instagram.doInBackground();
+                instagram.setLoadListener(this);
             } else if (input.contains("www.meipai.com")) {
                 MeiPai meiPai = new MeiPai(input);
                 meiPai.doInBackground();
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
                 tikTok.doInBackground();
                 tikTok.setLoadListener(this);
             }
-            if (input.contains("kg2.qq.com")) {
+            if (input.contains("kg2.qq.com")||input.contains("kg.qq.com")) {
                 QMKg kg = new QMKg(input);
                 kg.downloadAll();
                 kg.setLoadListener(this);
