@@ -1,24 +1,20 @@
 package z.houbin.site.zdown.module.Music;
 
-import android.text.TextUtils;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import z.houbin.site.zdown.info.MusicInfo;
 import z.houbin.site.zdown.module.BaseModule;
-import z.houbin.site.zdown.util.DownloadManager;
 
 public abstract class MusicModule extends BaseModule {
     protected List<MusicInfo> musicInfos = new ArrayList<MusicInfo>();
     protected Object data = null;
+    public String title;
 
-    public MusicModule(String input) {
-        super(input);
+    public MusicModule() {
     }
 
-    public void search() {
+    public void search(String input) {
 
     }
 
@@ -59,7 +55,20 @@ public abstract class MusicModule extends BaseModule {
         String[] items = new String[musicInfos.size()];
         for (int i = 0; i < musicInfos.size(); i++) {
             MusicInfo info = (MusicInfo) musicInfos.get(i);
-            items[i] = info.songName + "/" + info.singerName;
+            String item = info.songName + "/" + info.singerName;
+            if (info.sizeflac != 0) {
+                item += "/flac";
+            }
+            if (info.sizeApe != 0) {
+                item += "/ape";
+            }
+            if (info.size320 != 0) {
+                item += "/320";
+            }
+            if (info.size128 != 0) {
+                item += "/128";
+            }
+            items[i] = item;
         }
         return items;
     }

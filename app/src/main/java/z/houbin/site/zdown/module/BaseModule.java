@@ -9,7 +9,6 @@ import z.houbin.site.zdown.info.BaseInfo;
 import z.houbin.site.zdown.listener.LoadCallBack;
 
 public abstract class BaseModule {
-    protected String mInput;
     protected String mTitle;
     protected String mHost;
     protected String mUrl;
@@ -19,13 +18,12 @@ public abstract class BaseModule {
     protected LinkedHashMap<String, Object> metas = new LinkedHashMap<>();
     protected BaseInfo mInfo;
 
-    public BaseModule(String input) {
-        this.mInput = input;
+    public BaseModule() {
     }
 
     public void doInBackground() {
         onLoadStart();
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -34,7 +32,7 @@ public abstract class BaseModule {
         }.start();
     }
 
-    protected void doInThread(){
+    protected void doInThread() {
 
     }
 

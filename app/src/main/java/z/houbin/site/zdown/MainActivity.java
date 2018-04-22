@@ -2,6 +2,8 @@ package z.houbin.site.zdown;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -25,9 +27,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -43,31 +43,29 @@ import z.houbin.site.zdown.adapter.MenuAdapter;
 import z.houbin.site.zdown.info.BaseInfo;
 import z.houbin.site.zdown.listener.LoadCallBack;
 import z.houbin.site.zdown.module.BaseModule;
-import z.houbin.site.zdown.module.DouYin;
-import z.houbin.site.zdown.module.Instagram;
-import z.houbin.site.zdown.module.KuaiShou;
-import z.houbin.site.zdown.module.MeiPai;
-import z.houbin.site.zdown.module.MiaoPai;
-import z.houbin.site.zdown.module.Music.Kugou.Kugou;
-import z.houbin.site.zdown.module.Music.Kuwo.Kuwo;
 import z.houbin.site.zdown.module.Music.MusicModule;
-import z.houbin.site.zdown.module.Music.QMKg;
-import z.houbin.site.zdown.module.Music.QQMusicAlbum;
-import z.houbin.site.zdown.module.Music.QQMusicPlayList;
-import z.houbin.site.zdown.module.Music.QuanMingKg.Kg;
-import z.houbin.site.zdown.module.TikTok;
-import z.houbin.site.zdown.module.XiGua;
 import z.houbin.site.zdown.ui.InstagramWebActivity;
 import z.houbin.site.zdown.ui.ShowAct;
+import z.houbin.site.zdown.ui.child.BaseFragment;
+import z.houbin.site.zdown.ui.child.DouYinFragment;
+import z.houbin.site.zdown.ui.child.InstagramFragment;
+import z.houbin.site.zdown.ui.child.KuaiShouFragment;
+import z.houbin.site.zdown.ui.child.MeiPaiFragment;
+import z.houbin.site.zdown.ui.child.MiaoPaiFragment;
+import z.houbin.site.zdown.ui.child.NetEaseFragment;
+import z.houbin.site.zdown.ui.child.QQMusicFragment;
+import z.houbin.site.zdown.ui.child.QuanMingFragment;
+import z.houbin.site.zdown.ui.child.XiguaFragment;
 import z.houbin.site.zdown.util.DownloadManager;
 
 
 public class MainActivity extends AppCompatActivity implements LoadCallBack, DownloadManager.DownloadStatusUpdater, AdapterView.OnItemClickListener {
-    private EditText mInput;
     private Handler handler = new Handler();
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
-    private TextView tip;
+    private BaseFragment[] fragments = new BaseFragment[10];
+
+    private int currentChildFragment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close);
         drawerLayout.addDrawerListener(drawerToggle);
 
-        mInput = findViewById(R.id.edit);
         DownloadManager.getImpl().addUpdater(this);
 
         checkPermission();
@@ -97,7 +94,35 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         menuList.setAdapter(new MenuAdapter(getApplicationContext()));
         menuList.setOnItemClickListener(this);
 
-        tip = findViewById(R.id.tip);
+        fragments[0] = new QQMusicFragment();
+        fragments[1] = new NetEaseFragment();
+        fragments[2] = new QuanMingFragment();
+        fragments[3] = new DouYinFragment();
+        fragments[4] = new InstagramFragment();
+        fragments[5] = new MeiPaiFragment();
+        fragments[6] = new MiaoPaiFragment();
+        fragments[7] = new KuaiShouFragment();
+        fragments[8] = new XiguaFragment();
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        for (Fragment fragment : fragments) {
+            if (fragment != null) {
+                transaction.add(R.id.frame, fragment);
+                transaction.hide(fragment);
+            }
+        }
+        transaction.commit();
+        setChild(0);
+    }
+
+    private void setChild(int child) {
+        if (child == currentChildFragment) {
+            getFragmentManager().beginTransaction().show(fragments[child]).commit();
+            return;
+        }
+        getFragmentManager().beginTransaction().hide(fragments[currentChildFragment]).commit();
+        getFragmentManager().beginTransaction().show(fragments[child]).commit();
+        currentChildFragment = child;
     }
 
     @Override
@@ -123,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent != null) {
-            pasteText(intent.getStringExtra(Intent.EXTRA_TEXT));
+            fragments[currentChildFragment].pasteText(intent.getStringExtra(Intent.EXTRA_TEXT));
         }
     }
 
@@ -145,66 +170,66 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
     }
 
     public void download(View view) {
-        String input = mInput.getText().toString();
-        new Kuwo("");
-        if (!TextUtils.isEmpty(input)) {
-           /* if (input.contains("url.cn")) {
-                Toast.makeText(getApplicationContext(),"不支持短链接,请用浏览器打开短链接后复制网址",Toast.LENGTH_LONG).show();
-            } else*/
-            if (input.contains("www.instagram.com")) {
-                Instagram instagram = new Instagram(input);
-                instagram.doInBackground();
-                instagram.setLoadListener(this);
-            } else if (input.contains("www.meipai.com")) {
-                MeiPai meiPai = new MeiPai(input);
-                meiPai.doInBackground();
-                meiPai.setLoadListener(this);
-            } else if (input.contains("www.miaopai.com")) {
-                MiaoPai miaoPai = new MiaoPai(input);
-                miaoPai.doInBackground();
-                miaoPai.setLoadListener(this);
-            } else if (input.contains("douyin.com")) {
-                DouYin douYin = new DouYin(input);
-                douYin.doInBackground();
-                douYin.setLoadListener(this);
-            } else if (input.contains("www.gifshow.com") || input.contains("www.kuaishou.com")) {
-                KuaiShou kuaiShou = new KuaiShou(input);
-                kuaiShou.doInBackground();
-                kuaiShou.setLoadListener(this);
-            } else if (input.contains("365yg.com")) {
-                XiGua xiGua = new XiGua(input);
-                xiGua.doInBackground();
-                xiGua.setLoadListener(this);
-            } else if (input.contains("y.qq.com") || input.contains("url.cn")) {
-                if (input.contains("/n/yqq/album") || input.contains("url.cn")) {
-                    //专辑
-                    QQMusicAlbum qqMusicAlbum = new QQMusicAlbum(input);
-                    qqMusicAlbum.doInBackground();
-                    qqMusicAlbum.setLoadListener(this);
-                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist")) {
-                    //歌单
-                    QQMusicPlayList musicPlayList = new QQMusicPlayList(input);
-                    musicPlayList.doInBackground();
-                    musicPlayList.setLoadListener(this);
-                }
-            } else if (input.contains("www.tiktokv.com")) {
-                TikTok tikTok = new TikTok(input);
-                tikTok.doInBackground();
-                tikTok.setLoadListener(this);
-            }
-            if (input.contains("kg2.qq.com")||input.contains("kg.qq.com")) {
-                QMKg kg = new QMKg(input);
-                kg.downloadAll();
-                kg.setLoadListener(this);
-            } else {
-                Kugou kugou = new Kugou(input);
-                kugou.search();
-                kugou.setLoadListener(this);
-//                QQMusic music = new QQMusic(input);
-//                music.search();
-//                music.setLoadListener(this);
-            }
-        }
+        String input = "";
+//        new Kuwo("");
+//        if (!TextUtils.isEmpty(input)) {
+//           /* if (input.contains("url.cn")) {
+//                Toast.makeText(getApplicationContext(),"不支持短链接,请用浏览器打开短链接后复制网址",Toast.LENGTH_LONG).show();
+//            } else*/
+//            if (input.contains("www.instagram.com")) {
+//                Instagram instagram = new Instagram(input);
+//                instagram.doInBackground();
+//                instagram.setLoadListener(this);
+//            } else if (input.contains("www.meipai.com")) {
+//                MeiPai meiPai = new MeiPai(input);
+//                meiPai.doInBackground();
+//                meiPai.setLoadListener(this);
+//            } else if (input.contains("www.miaopai.com")) {
+//                MiaoPai miaoPai = new MiaoPai(input);
+//                miaoPai.doInBackground();
+//                miaoPai.setLoadListener(this);
+//            } else if (input.contains("douyin.com")) {
+//                DouYin douYin = new DouYin(input);
+//                douYin.doInBackground();
+//                douYin.setLoadListener(this);
+//            } else if (input.contains("www.gifshow.com") || input.contains("www.kuaishou.com")) {
+//                KuaiShou kuaiShou = new KuaiShou(input);
+//                kuaiShou.doInBackground();
+//                kuaiShou.setLoadListener(this);
+//            } else if (input.contains("365yg.com")) {
+//                XiGua xiGua = new XiGua(input);
+//                xiGua.doInBackground();
+//                xiGua.setLoadListener(this);
+//            } else if (input.contains("y.qq.com") || input.contains("url.cn")) {
+//                if (input.contains("/n/yqq/album") || input.contains("url.cn")) {
+//                    //专辑
+//                    QQMusicAlbum qqMusicAlbum = new QQMusicAlbum(input);
+//                    qqMusicAlbum.doInBackground();
+//                    qqMusicAlbum.setLoadListener(this);
+//                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist")) {
+//                    //歌单
+//                    QQMusicPlayList musicPlayList = new QQMusicPlayList(input);
+//                    musicPlayList.doInBackground();
+//                    musicPlayList.setLoadListener(this);
+//                }
+//            } else if (input.contains("www.tiktokv.com")) {
+//                TikTok tikTok = new TikTok(input);
+//                tikTok.doInBackground();
+//                tikTok.setLoadListener(this);
+//            }
+//            if (input.contains("kg2.qq.com") || input.contains("kg.qq.com")) {
+//                QMKg kg = new QMKg(input);
+//                kg.downloadAll();
+//                kg.setLoadListener(this);
+//            } else {
+//                Kugou kugou = new Kugou(input);
+//                kugou.search();
+//                kugou.setLoadListener(this);
+////                QQMusic music = new QQMusic(input);
+////                music.search();
+////                music.setLoadListener(this);
+//            }
+//        }
     }
 
     @Override
@@ -325,38 +350,11 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         startActivity(intent);
     }
 
-    public void paste(View view) {
-        ClipboardManager mClipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = mClipboardManager.getPrimaryClip();
-        if (clip.getItemCount() != 0) {
-            if (mInput != null) {
-                String text = clip.getItemAt(0).getText().toString();
-                pasteText(text);
-            }
-        }
-    }
-
-    private void pasteText(String text) {
-        if (TextUtils.isEmpty(text)) {
-            return;
-        }
-        Pattern pattern = Pattern.compile("(http[https]?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            mInput.setText(matcher.group());
-            System.out.println(matcher.group());
-        }
-    }
-
-    public void clear(View view) {
-        if (mInput != null) {
-            mInput.getEditableText().clear();
-        }
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         drawerLayout.closeDrawer(Gravity.START);
+        setChild(position);
         switch (position) {
             case 0:
                 break;
