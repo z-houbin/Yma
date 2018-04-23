@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,16 +34,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import z.houbin.site.zdown.adapter.MenuAdapter;
 import z.houbin.site.zdown.info.BaseInfo;
 import z.houbin.site.zdown.listener.LoadCallBack;
 import z.houbin.site.zdown.module.BaseModule;
 import z.houbin.site.zdown.module.Music.MusicModule;
+import z.houbin.site.zdown.ui.HistoryAct;
 import z.houbin.site.zdown.ui.InstagramWebActivity;
-import z.houbin.site.zdown.ui.ShowAct;
 import z.houbin.site.zdown.ui.child.BaseFragment;
 import z.houbin.site.zdown.ui.child.DouYinFragment;
 import z.houbin.site.zdown.ui.child.InstagramFragment;
@@ -55,7 +51,6 @@ import z.houbin.site.zdown.ui.child.MiaoPaiFragment;
 import z.houbin.site.zdown.ui.child.NetEaseFragment;
 import z.houbin.site.zdown.ui.child.QQMusicFragment;
 import z.houbin.site.zdown.ui.child.QuanMingFragment;
-import z.houbin.site.zdown.ui.child.XiguaFragment;
 import z.houbin.site.zdown.util.DownloadManager;
 
 
@@ -73,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         ActionBar mActionBar = getSupportActionBar();
@@ -102,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         fragments[5] = new MeiPaiFragment();
         fragments[6] = new MiaoPaiFragment();
         fragments[7] = new KuaiShouFragment();
-        fragments[8] = new XiguaFragment();
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         for (Fragment fragment : fragments) {
@@ -113,6 +108,12 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         }
         transaction.commit();
         setChild(0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void setChild(int child) {
@@ -133,6 +134,10 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
             } else {
                 drawerLayout.openDrawer(Gravity.START);
             }
+            return true;
+        } else if (item.getItemId() == R.id.menu_history) {
+            Intent intent = new Intent(getApplicationContext(), HistoryAct.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -178,47 +183,47 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
 //            } else*/
 //            if (input.contains("www.instagram.com")) {
 //                Instagram instagram = new Instagram(input);
-//                instagram.doInBackground();
+//                instagram.parse();
 //                instagram.setLoadListener(this);
 //            } else if (input.contains("www.meipai.com")) {
 //                MeiPai meiPai = new MeiPai(input);
-//                meiPai.doInBackground();
+//                meiPai.parse();
 //                meiPai.setLoadListener(this);
 //            } else if (input.contains("www.miaopai.com")) {
 //                MiaoPai miaoPai = new MiaoPai(input);
-//                miaoPai.doInBackground();
+//                miaoPai.parse();
 //                miaoPai.setLoadListener(this);
 //            } else if (input.contains("douyin.com")) {
 //                DouYin douYin = new DouYin(input);
-//                douYin.doInBackground();
+//                douYin.parse();
 //                douYin.setLoadListener(this);
 //            } else if (input.contains("www.gifshow.com") || input.contains("www.kuaishou.com")) {
 //                KuaiShou kuaiShou = new KuaiShou(input);
-//                kuaiShou.doInBackground();
+//                kuaiShou.parse();
 //                kuaiShou.setLoadListener(this);
 //            } else if (input.contains("365yg.com")) {
 //                XiGua xiGua = new XiGua(input);
-//                xiGua.doInBackground();
+//                xiGua.parse();
 //                xiGua.setLoadListener(this);
 //            } else if (input.contains("y.qq.com") || input.contains("url.cn")) {
 //                if (input.contains("/n/yqq/album") || input.contains("url.cn")) {
 //                    //专辑
 //                    QQMusicAlbum qqMusicAlbum = new QQMusicAlbum(input);
-//                    qqMusicAlbum.doInBackground();
+//                    qqMusicAlbum.parse();
 //                    qqMusicAlbum.setLoadListener(this);
 //                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist")) {
 //                    //歌单
 //                    QQMusicPlayList musicPlayList = new QQMusicPlayList(input);
-//                    musicPlayList.doInBackground();
+//                    musicPlayList.parse();
 //                    musicPlayList.setLoadListener(this);
 //                }
 //            } else if (input.contains("www.tiktokv.com")) {
 //                TikTok tikTok = new TikTok(input);
-//                tikTok.doInBackground();
+//                tikTok.parse();
 //                tikTok.setLoadListener(this);
 //            }
 //            if (input.contains("kg2.qq.com") || input.contains("kg.qq.com")) {
-//                QMKg kg = new QMKg(input);
+//                Qmkg kg = new Qmkg(input);
 //                kg.downloadAll();
 //                kg.setLoadListener(this);
 //            } else {
@@ -345,12 +350,6 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         DownloadManager.getImpl().removeUpdater(this);
     }
 
-    public void show(View view) {
-        Intent intent = new Intent(getApplicationContext(), ShowAct.class);
-        startActivity(intent);
-    }
-
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         drawerLayout.closeDrawer(Gravity.START);
@@ -364,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
                 break;
             case 3:
                 Intent intent = new Intent(getApplicationContext(), InstagramWebActivity.class);
-                startActivity(intent);
+                //startActivity(intent);
                 break;
             case 4:
                 break;

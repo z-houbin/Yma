@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ShowAct"
+            android:name=".ui.HistoryAct"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity

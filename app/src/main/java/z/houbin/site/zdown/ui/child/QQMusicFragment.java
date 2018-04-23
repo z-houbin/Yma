@@ -28,9 +28,7 @@ import z.houbin.site.zdown.module.Music.QQMusic;
  * QQ音乐
  */
 public class QQMusicFragment extends BaseFragment implements TextWatcher, View.OnClickListener, LoadCallBack {
-    private Handler handler = new Handler();
     private QQMusic music = new QQMusic();
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

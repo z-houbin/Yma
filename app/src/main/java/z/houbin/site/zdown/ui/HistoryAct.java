@@ -34,7 +34,7 @@ import z.houbin.site.zdown.R;
 import z.houbin.site.zdown.util.IntentUtil;
 
 //查看界面
-public class ShowAct extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private RecyclerView list;
     private GridLayoutManager manager;

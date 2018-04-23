@@ -24,7 +24,9 @@ public abstract class BaseInfo {
     //og:video:height
     public String vheight;
     //内容
-    public String content;
+    public String content = "";
     //音乐
-    public String music;
+    public String music = "";
+    //作者
+    public String author = "";
 }

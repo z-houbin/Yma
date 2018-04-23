@@ -43,11 +43,4 @@
         android:iconTintMode="screen"
         android:title="快手"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/xigua"
-        android:icon="@drawable/icon_xigua"
-        android:iconTint="@null"
-        android:iconTintMode="screen"
-        android:title="西瓜"
-        app:showAsAction="always" />
 </menu>

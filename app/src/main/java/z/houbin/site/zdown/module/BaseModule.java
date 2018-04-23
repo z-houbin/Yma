@@ -21,18 +21,18 @@ public abstract class BaseModule {
     public BaseModule() {
     }
 
-    public void doInBackground() {
+    public void parse(final String text) {
         onLoadStart();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                doInThread();
+                doInThread(text);
             }
         }.start();
     }
 
-    protected void doInThread() {
+    protected void doInThread(String text) {
 
     }
 
@@ -76,5 +76,9 @@ public abstract class BaseModule {
             builder.append("],");
         }
         return builder.toString();
+    }
+
+    public void download(){
+
     }
 }
