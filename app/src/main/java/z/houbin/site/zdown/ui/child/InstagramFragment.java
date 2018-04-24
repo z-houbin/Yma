@@ -66,9 +66,9 @@ public class InstagramFragment extends BaseFragment {
         msg.append(module.getInfo().content);
         msg.append("\r\n");
         msg.append("\r\n");
-        msg.append("图片" + module.getInfo().image.size());
-        msg.append("\r\n");
+        msg.append("图片").append(module.getInfo().image.size());
         if (!TextUtils.isEmpty(module.getInfo().video)) {
+            msg.append("\r\n");
             msg.append(",视频1");
             msg.append("\r\n");
         }
@@ -80,8 +80,7 @@ public class InstagramFragment extends BaseFragment {
             }
         });
         builder.create().show();
-        builder.create().show();
-        Intent intent = new Intent(getActivity(), InstagramWebActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(getActivity(), InstagramWebActivity.class);
+        //startActivity(intent);
     }
 }

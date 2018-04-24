@@ -1,5 +1,6 @@
 package z.houbin.site.zdown.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,11 +8,14 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,6 +42,7 @@ import z.houbin.site.zdown.util.IntentUtil;
 public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private RecyclerView list;
     private GridLayoutManager manager;
+    private RecyclerAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +64,7 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
         if (dir.exists()) {
             final List<File> files = getListFiles(dir);
 
-            RecyclerAdapter adapter = new RecyclerAdapter(files);
+            adapter = new RecyclerAdapter(files);
             adapter.setItemClickListener(this);
             list.setAdapter(adapter);
             manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -72,6 +77,73 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.history_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_date) {
+            showDateDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    private File[] dirs;
+    private void showDateDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("选择日期");
+        File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/Yma/");
+        CharSequence[] items = null;
+        if (dir.exists()) {
+            dirs = dir.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    if (pathname.isDirectory()) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            Arrays.sort(dirs, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    if (o1.isDirectory() && o2.isFile())
+                        return -1;
+                    if (o1.isFile() && o2.isDirectory())
+                        return 1;
+                    return o2.getName().compareTo(o1.getName());
+                }
+            });
+            items = new CharSequence[dirs.length];
+            for (int i = 0; i < dirs.length; i++) {
+                items[i] = dirs[i].getName();
+            }
+        }
+        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                File file = dirs[which];
+                List<File> adapterFiles = adapter.getFiles();
+                for (int i = 0; i < adapterFiles.size(); i++) {
+                    File adpFile = adapterFiles.get(i);
+                    if(adpFile.isDirectory()){
+                        if(adpFile.getName().equalsIgnoreCase(file.getName())){
+                            manager.scrollToPosition(i+4);
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+        AlertDialog dialog;
+        dialog = builder.create();
+        dialog.show();
     }
 
     private List<File> getListFiles(File dir) {
@@ -146,6 +218,10 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
                     dirPosition.add(i);
                 }
             }
+        }
+
+        public List<File> getFiles() {
+            return files;
         }
 
         public void setItemClickListener(AdapterView.OnItemClickListener clickListener) {
