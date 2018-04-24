@@ -30,6 +30,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener, Text
     protected Button iDownload;
     protected Button iPaste;
     protected Button iClear;
+    protected String label;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -64,6 +65,14 @@ public class BaseFragment extends Fragment implements View.OnClickListener, Text
             case R.id.download:
                 onDownloadClick(v);
                 break;
+        }
+    }
+
+    protected String getInput(){
+        if(iEditText != null){
+            return iEditText.getText().toString();
+        }else{
+            return null;
         }
     }
 
@@ -150,5 +159,13 @@ public class BaseFragment extends Fragment implements View.OnClickListener, Text
             }
         });
         builder.create().show();
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

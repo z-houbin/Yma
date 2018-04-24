@@ -27,10 +27,12 @@
         <item name="color">@android:color/white</item>
     </style>
 
-    <style name="InputBox" parent="Base.TextAppearance.AppCompat.Button">
+    <style name="InputBox">
         <item name="android:lines">4</item>
-        <item name="android:background">@drawable/edit_background</item>
+        <item name="android:background">#fff</item>
         <item name="android:gravity">top|start</item>
         <item name="android:padding">15dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:inputType">none</item>
     </style>
 </resources>

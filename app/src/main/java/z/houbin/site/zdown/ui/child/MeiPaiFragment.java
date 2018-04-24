@@ -28,6 +28,7 @@ public class MeiPaiFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         meiPai.setLoadListener(this);
+        setLabel("美拍");
     }
 
     @Override

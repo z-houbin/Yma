@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/menu_icon"
-        android:layout_width="45dp"
-        android:layout_height="45dp" />
+        android:layout_width="32dp"
+        android:layout_height="32dp" />
 
     <TextView
         android:id="@+id/menu_title"

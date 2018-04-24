@@ -32,6 +32,7 @@ public class MiaoPaiFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         miaoPai.setLoadListener(this);
+        setLabel("秒拍");
     }
 
     @Override

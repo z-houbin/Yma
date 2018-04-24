@@ -33,6 +33,7 @@ public class QuanMingFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         qmkg.setLoadListener(this);
+        setLabel("全民K歌");
     }
 
     @Override

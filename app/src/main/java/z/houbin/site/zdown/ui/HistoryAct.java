@@ -1,7 +1,6 @@
 package z.houbin.site.zdown.ui;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,12 +32,12 @@ import java.util.List;
 import z.houbin.site.zdown.R;
 import z.houbin.site.zdown.util.IntentUtil;
 
-//查看界面
+/**
+ * 下载历史
+ */
 public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemClickListener {
-
     private RecyclerView list;
     private GridLayoutManager manager;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -175,15 +174,12 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
             }
             /* 获取文件的后缀名*/
             String end = fName.substring(dotIndex + 1, fName.length()).toLowerCase();
-//            if(!TextUtils.isEmpty(end)){
-//                return end;
-//            }
             switch (end) {
                 case "3gp":
                 case "mp4":
                 case "avi":
                 case "rmvb":
-                    return "V";
+                    return "视频";
                 case "mp3":
                 case "m4a":
                 case "ogg":
@@ -191,13 +187,13 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
                 case "wmv":
                 case "ape":
                 case "flac":
-                    return "M";
+                    return "音乐";
                 case "bmp":
                 case "jpg":
                 case "png":
                 case "gif":
                 case "jpeg":
-                    return "P";
+                    return "图片";
                 default:
                     return "未知";
             }
@@ -235,13 +231,13 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
                     holder.icon.setVisibility(View.GONE);
                 } else {
                     holder.icon.setVisibility(View.VISIBLE);
-                    if ("M".equals(t)) {
+                    if (t.contains("音乐")) {
                         holder.icon.setText(files.get(position).getName());
                         holder.icon.setLines(2);
                         Glide.with(getApplicationContext()).load(R.drawable.ic_music_circle_black_36dp).into(holder.pic);
                     } else {
                         holder.icon.setText(t);
-                        holder.icon.setLines(1);
+                        holder.icon.setLines(2);
                     }
                 }
             }

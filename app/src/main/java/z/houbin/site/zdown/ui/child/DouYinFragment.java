@@ -36,6 +36,7 @@ public class DouYinFragment extends BaseFragment implements LoadCallBack {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         douYin.setLoadListener(this);
+        setLabel("抖音");
     }
 
     @Override

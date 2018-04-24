@@ -28,6 +28,7 @@ public class KuaiShouFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         kuaiShou.setLoadListener(this);
+        setLabel("快手");
     }
 
     @Override

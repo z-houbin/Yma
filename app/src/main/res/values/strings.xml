@@ -5,4 +5,7 @@
     <string name="drawer_open">打开</string>
     <string name="drawer_close">关闭</string>
     <string name="kuaishou"><![CDATA[https://www.kuaishou.com/photo/1XPaCXnlajP7JAV7yag00FZw/1XYbUaSReeL-uZZeCBgeH6Lw?userId=1XPaCXnlajP7JAV7yag00FZw&photoId=1XYbUaSReeL-uZZeCBgeH6Lw&timestamp=1523376875390&cc=share_copylink&fid=896511413&et=1_i%2F1597376299632201732_h120]]></string>
+    <string name="paste">粘贴</string>
+    <string name="clear">清空</string>
+    <string name="download">下载</string>
 </resources>

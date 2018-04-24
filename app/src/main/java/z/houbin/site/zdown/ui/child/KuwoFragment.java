@@ -1,19 +1,15 @@
 package z.houbin.site.zdown.ui.child;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,35 +17,38 @@ import java.util.List;
 import z.houbin.site.zdown.R;
 import z.houbin.site.zdown.listener.LoadCallBack;
 import z.houbin.site.zdown.module.BaseModule;
+import z.houbin.site.zdown.module.Music.Kuwo.Kuwo;
 import z.houbin.site.zdown.module.Music.MusicModule;
-import z.houbin.site.zdown.module.Music.QQMusic;
+import z.houbin.site.zdown.ui.InstagramWebActivity;
 
 /**
- * QQ音乐
+ * 酷我
+ * https://www.iesdouyin.com/share/video/6546873189920673037/?region=CN&mid=6546873268693912328&titleType=title&utm_source=copy_link&utm_campaign=client_share&utm_medium=android&app=aweme&iid=31077384148&timestamp=1524486143
  */
-public class QQMusicFragment extends BaseFragment implements TextWatcher, View.OnClickListener, LoadCallBack {
-    private QQMusic music = new QQMusic();
+public class KuwoFragment extends BaseFragment implements LoadCallBack {
+    private Kuwo kuwo = new Kuwo();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.layout_qqmusic, null);
+        return inflater.inflate(R.layout.layout_kuwo, null);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        music.setLoadListener(this);
-        setLabel("QQ音乐");
+        kuwo.setLoadListener(this);
+        setLabel("酷我");
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+    public void onLoadEnd(final BaseModule module) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                showInfo((MusicModule) module);
+            }
+        });
     }
 
     @Override
@@ -62,44 +61,24 @@ public class QQMusicFragment extends BaseFragment implements TextWatcher, View.O
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.download:
-                String input = iEditText.getText().toString();
-                if (input.contains("/n/yqq/album") || input.contains("url.cn")) {
-                    //专辑
-                    music.parseAlbum(input);
-                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist")||input.contains("y.qq.com/w")) {
-                    //歌单
-                    music.parsePlayList(input);
-                } else if(!input.contains("http")){
-                    //搜索
-                    music.search(input);
-                }
-                break;
-        }
-        super.onClick(v);
-    }
-
-    @Override
-    public void onLoadStart(BaseModule module) {
-
-    }
-
-    @Override
-    public void onLoadEnd(BaseModule module) {
-        if (module instanceof MusicModule) {
-            final MusicModule music = (MusicModule) module;
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    showMusicList(music);
-                }
-            });
+    public void onDownloadClick(View v) {
+        super.onDownloadClick(v);
+        String url = iEditText.getText().toString();
+        if (!TextUtils.isEmpty(url)) {
+            if (url.contains("/n/yqq/album") || url.contains("url.cn")) {
+                //专辑
+                //kuwo.parseAlbum(input);
+            } else if (url.contains("n/yqq/playsquare") | url.contains("n/yqq/playlist") || url.contains("y.qq.com/w")) {
+                //歌单
+                //music.parsePlayList(input);
+            } else {
+                //搜索
+                kuwo.search(url);
+            }
         }
     }
 
-    private void showMusicList(final MusicModule module) {
+    protected void showInfo(final MusicModule module) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         CharSequence[] items = module.getShowList();
         final List<Integer> checkList = new ArrayList<>();
@@ -137,10 +116,5 @@ public class QQMusicFragment extends BaseFragment implements TextWatcher, View.O
             }
         });
         builder.create().show();
-    }
-
-    @Override
-    public void onLoadError(BaseModule module, Exception e) {
-
     }
 }

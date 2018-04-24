@@ -49,6 +49,7 @@ public class InstagramWebActivity extends Activity implements DownloadManager.Do
             @Nullable
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                System.out.println(url);
                 if (url.endsWith(".mp4")) {
                     System.out.println("下载:" + url);
                     Intent intent = new Intent();
@@ -62,7 +63,7 @@ public class InstagramWebActivity extends Activity implements DownloadManager.Do
             }
         });
 
-        web.loadUrl("https://www.instagram.com/stories/vina_grammm/");
+        web.loadUrl("https://www.instagram.com/gucci_grammm");
         DownloadManager.getImpl().addUpdater(this);
     }
 

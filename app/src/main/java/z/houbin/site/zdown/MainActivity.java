@@ -46,6 +46,7 @@ import z.houbin.site.zdown.ui.child.BaseFragment;
 import z.houbin.site.zdown.ui.child.DouYinFragment;
 import z.houbin.site.zdown.ui.child.InstagramFragment;
 import z.houbin.site.zdown.ui.child.KuaiShouFragment;
+import z.houbin.site.zdown.ui.child.KuwoFragment;
 import z.houbin.site.zdown.ui.child.MeiPaiFragment;
 import z.houbin.site.zdown.ui.child.MiaoPaiFragment;
 import z.houbin.site.zdown.ui.child.NetEaseFragment;
@@ -92,12 +93,13 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
 
         fragments[0] = new QQMusicFragment();
         fragments[1] = new NetEaseFragment();
-        fragments[2] = new QuanMingFragment();
-        fragments[3] = new DouYinFragment();
-        fragments[4] = new InstagramFragment();
-        fragments[5] = new MeiPaiFragment();
-        fragments[6] = new MiaoPaiFragment();
-        fragments[7] = new KuaiShouFragment();
+        fragments[2] = new KuwoFragment();
+        fragments[3] = new QuanMingFragment();
+        fragments[4] = new DouYinFragment();
+        fragments[5] = new InstagramFragment();
+        fragments[6] = new MeiPaiFragment();
+        fragments[7] = new MiaoPaiFragment();
+        fragments[8] = new KuaiShouFragment();
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         for (Fragment fragment : fragments) {
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         }
         transaction.commit();
         setChild(0);
+        getSupportActionBar().setSubtitle("QQ音乐");
     }
 
     @Override
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
     }
 
     private void setChild(int child) {
+        getSupportActionBar().setSubtitle(fragments[child].getLabel());
         if (child == currentChildFragment) {
             getFragmentManager().beginTransaction().show(fragments[child]).commit();
             return;

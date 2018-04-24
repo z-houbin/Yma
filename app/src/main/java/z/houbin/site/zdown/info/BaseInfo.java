@@ -11,7 +11,7 @@ public abstract class BaseInfo {
     //og:video
     public String video;
     //og:title
-    public String title;
+    public String title = "";
     //og:image
     public List<String> image = new ArrayList<>();
     //og:description
