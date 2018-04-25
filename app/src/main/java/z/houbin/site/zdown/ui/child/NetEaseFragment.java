@@ -1,7 +1,6 @@
 package z.houbin.site.zdown.ui.child;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,7 +42,9 @@ public class NetEaseFragment extends BaseFragment {
         if (getInput() != null) {
             if (getInput().startsWith("http") && getInput().contains("playlist")) {
                 netEase.parsePlayList(getInput());
-            } else {
+            } else if (getInput().startsWith("http") && getInput().contains("album")) {
+                netEase.parseAlbum(getInput());
+            } else if (!getInput().contains("http")) {
                 netEase.search(getInput());
             }
         }
