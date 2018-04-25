@@ -1,19 +1,14 @@
 package z.houbin.site.zdown.ui.child;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +22,9 @@ import z.houbin.site.zdown.module.Music.QQMusic;
 /**
  * QQ音乐
  */
-public class QQMusicFragment extends BaseFragment implements TextWatcher, View.OnClickListener, LoadCallBack {
+public class QQMusicFragment extends BaseFragment implements View.OnClickListener, LoadCallBack {
     private QQMusic music = new QQMusic();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -42,15 +38,6 @@ public class QQMusicFragment extends BaseFragment implements TextWatcher, View.O
         setLabel("QQ音乐");
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
 
     @Override
     public void afterTextChanged(Editable s) {
@@ -69,10 +56,10 @@ public class QQMusicFragment extends BaseFragment implements TextWatcher, View.O
                 if (input.contains("/n/yqq/album") || input.contains("url.cn")) {
                     //专辑
                     music.parseAlbum(input);
-                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist")||input.contains("y.qq.com/w")) {
+                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist") || input.contains("y.qq.com/w")) {
                     //歌单
                     music.parsePlayList(input);
-                } else if(!input.contains("http")){
+                } else if (!input.contains("http")) {
                     //搜索
                     music.search(input);
                 }

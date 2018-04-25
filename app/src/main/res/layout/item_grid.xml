@@ -10,7 +10,8 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:minHeight="75dp"
-        android:minWidth="75dp" />
+        android:minWidth="75dp"
+        android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/title"

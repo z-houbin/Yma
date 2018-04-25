@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,14 @@ public class NetEaseFragment extends BaseFragment {
         netEase.setLoadListener(this);
         setLabel("网易云音乐");
     }
-
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (s.toString().startsWith("http") && s.length() > 10) {
+            iDownload.setText("解析");
+        } else {
+            iDownload.setText("搜索");
+        }
+    }
     @Override
     public void onDownloadClick(View v) {
         super.onDownloadClick(v);

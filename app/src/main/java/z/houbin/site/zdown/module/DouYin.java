@@ -33,7 +33,7 @@ public class DouYin extends BaseModule {
     @Override
     public void doInThread(String text) {
         super.doInThread(text);
-        Request request = new Request.Builder().get().url(text).headers(mHeaders).build();
+        Request request = new Request.Builder().get().url(text).build();
         mClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -45,7 +45,7 @@ public class DouYin extends BaseModule {
                 String html = response.body().string();
                 Document document = Jsoup.parse(html);
                 Elements scriptElements = document.select("script");
-                String json = scriptElements.get(5).data();
+                String json = scriptElements.last().data();
                 json = json.substring(json.indexOf("["));
                 json = json.substring(0, json.lastIndexOf("];") + 1);
                 mInfo = new BaseInfo() {

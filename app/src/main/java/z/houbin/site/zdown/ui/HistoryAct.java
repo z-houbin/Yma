@@ -1,7 +1,12 @@
 package z.houbin.site.zdown.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -93,7 +98,9 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
         }
         return super.onOptionsItemSelected(item);
     }
+
     private File[] dirs;
+
     private void showDateDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("选择日期");
@@ -132,9 +139,9 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
                 List<File> adapterFiles = adapter.getFiles();
                 for (int i = 0; i < adapterFiles.size(); i++) {
                     File adpFile = adapterFiles.get(i);
-                    if(adpFile.isDirectory()){
-                        if(adpFile.getName().equalsIgnoreCase(file.getName())){
-                            manager.scrollToPosition(i+4);
+                    if (adpFile.isDirectory()) {
+                        if (adpFile.getName().equalsIgnoreCase(file.getName())) {
+                            manager.scrollToPosition(i + 4);
                             return;
                         }
                     }
@@ -301,7 +308,7 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
             } else {
                 holder.title.setVisibility(View.GONE);
                 holder.pic.setVisibility(View.VISIBLE);
-                Glide.with(getApplicationContext()).load("file://" + files.get(position)).into(holder.pic);
+
                 String t = getFileType(files.get(position));
                 if (TextUtils.isEmpty(t)) {
                     holder.icon.setVisibility(View.GONE);
@@ -314,6 +321,7 @@ public class HistoryAct extends AppCompatActivity implements AdapterView.OnItemC
                     } else {
                         holder.icon.setText(t);
                         holder.icon.setLines(2);
+                        Glide.with(getApplicationContext()).load("file://" + files.get(position)).into(holder.pic);
                     }
                 }
             }
