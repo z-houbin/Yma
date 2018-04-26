@@ -23,6 +23,10 @@ public class MusicInfo extends BaseInfo{
     public long sizeflac;
     public long sizeogg;
     public String docid;
+    //比特率(48kHz/24bit)
+    public String bitrate;
+    public String duration;
+    public Object source;
 
     @Override
     public String toString() {

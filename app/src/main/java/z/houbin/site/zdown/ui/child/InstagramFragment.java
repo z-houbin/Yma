@@ -68,7 +68,6 @@ public class InstagramFragment extends BaseFragment {
         msg.append("\r\n");
         msg.append("图片").append(module.getInfo().image.size());
         if (!TextUtils.isEmpty(module.getInfo().video)) {
-            msg.append("\r\n");
             msg.append(",视频1");
             msg.append("\r\n");
         }

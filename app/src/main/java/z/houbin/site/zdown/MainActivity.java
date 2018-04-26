@@ -40,6 +40,7 @@ import z.houbin.site.zdown.info.BaseInfo;
 import z.houbin.site.zdown.listener.LoadCallBack;
 import z.houbin.site.zdown.module.BaseModule;
 import z.houbin.site.zdown.module.Music.MusicModule;
+import z.houbin.site.zdown.module.Music.sony.Sony;
 import z.houbin.site.zdown.ui.HistoryAct;
 import z.houbin.site.zdown.ui.InstagramWebActivity;
 import z.houbin.site.zdown.ui.child.BaseFragment;
@@ -52,6 +53,7 @@ import z.houbin.site.zdown.ui.child.MiaoPaiFragment;
 import z.houbin.site.zdown.ui.child.NetEaseFragment;
 import z.houbin.site.zdown.ui.child.QQMusicFragment;
 import z.houbin.site.zdown.ui.child.QuanMingFragment;
+import z.houbin.site.zdown.ui.child.SonyFragment;
 import z.houbin.site.zdown.util.DownloadManager;
 
 
@@ -94,12 +96,13 @@ public class MainActivity extends AppCompatActivity implements LoadCallBack, Dow
         fragments[0] = new QQMusicFragment();
         fragments[1] = new NetEaseFragment();
         fragments[2] = new KuwoFragment();
-        fragments[3] = new QuanMingFragment();
-        fragments[4] = new DouYinFragment();
-        fragments[5] = new InstagramFragment();
-        fragments[6] = new MeiPaiFragment();
-        fragments[7] = new MiaoPaiFragment();
-        fragments[8] = new KuaiShouFragment();
+        fragments[3] = new SonyFragment();
+        fragments[4] = new QuanMingFragment();
+        fragments[5] = new DouYinFragment();
+        fragments[6] = new InstagramFragment();
+        fragments[7] = new MeiPaiFragment();
+        fragments[8] = new MiaoPaiFragment();
+        fragments[9] = new KuaiShouFragment();
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         for (Fragment fragment : fragments) {
