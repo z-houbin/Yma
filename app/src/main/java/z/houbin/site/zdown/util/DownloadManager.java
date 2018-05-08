@@ -6,6 +6,12 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,7 +105,31 @@ public class DownloadManager {
 
         @Override
         protected void completed(BaseDownloadTask task) {
+            if (isVideo(task.getTargetFilePath())) {
+                changeMd5(task.getTargetFilePath());
+                System.out.println("MD5:" + MD5.getFileMD5(new File(task.getTargetFilePath())));
+            }
             listComplete(task);
+        }
+
+        private void changeMd5(String path) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(path, true));
+                writer.write(System.currentTimeMillis() + "");
+                writer.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private boolean isVideo(String path) {
+            if (path.endsWith(".3gp") || path.endsWith(".mp4") || path.endsWith(".avi") || path.endsWith(".rmvb")) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
@@ -141,7 +171,9 @@ public class DownloadManager {
 
     public interface DownloadStatusUpdater {
         void blockComplete(BaseDownloadTask task);
+
         void complete(BaseDownloadTask task);
+
         void update(BaseDownloadTask task);
     }
 }

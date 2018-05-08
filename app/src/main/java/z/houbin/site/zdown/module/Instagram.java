@@ -86,7 +86,7 @@ public class Instagram extends BaseModule {
                                     mInfo.vheight = element.attr("content");
                                     break;
                                 case "og:image":
-                                    //mInfo.image.add(element.attr("content"));
+                                    mInfo.image.add(element.attr("content"));
                                     break;
                                 case "og:site_name":
                                     mInfo.site = element.attr("content");
@@ -119,6 +119,9 @@ public class Instagram extends BaseModule {
                                 JSONArray resources = node.getJSONArray("display_resources");
                                 JSONObject resource = resources.getJSONObject(resources.length() - 1);
                                 picList.add(resource.getString("src"));
+                            }
+                            if (picList.size() != 0) {
+                                mInfo.image.clear();
                             }
                             mInfo.image.addAll(picList);
                             metas.put("og:image", picList);

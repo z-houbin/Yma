@@ -49,7 +49,7 @@ public class MiaoPai extends BaseModule {
                 try {
                     String html = response.body().string();
                     JSONObject jsonObject = new JSONObject(html);
-                    JSONObject result = jsonObject.getJSONArray("result").getJSONObject(0);
+                    JSONObject result = jsonObject.getJSONArray("result").getJSONObject(1);
                     StringBuilder builder = new StringBuilder();
                     builder.append(result.getString("scheme"));
                     builder.append(result.getString("host"));
