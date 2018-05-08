@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,20 +56,43 @@ public class QQMusicFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.download:
-                String input = iEditText.getText().toString();
-                if (input.contains("/n/yqq/album") || input.contains("url.cn")) {
-                    //专辑
-                    music.parseAlbum(input);
-                } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist") || input.contains("y.qq.com/w")) {
-                    //歌单
-                    music.parsePlayList(input);
-                } else if (!input.contains("http")) {
-                    //搜索
-                    music.search(input);
+                final String mInput = iEditText.getText().toString();
+                if (mInput.contains("url.cn")) {
+                    //短网址打开后再解析
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            try {
+                                Document document = Jsoup.connect(mInput).get();
+                                download(document.location());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
+                } else {
+                    download(mInput);
                 }
                 break;
         }
         super.onClick(v);
+    }
+
+    private void download(String input) {
+        if (input.contains("/n/yqq/album") || input.contains("/w/album.html")) {
+            //专辑
+            music.parseAlbum(input);
+        } else if (input.contains("n/yqq/playsquare") | input.contains("n/yqq/playlist") || input.contains("y.qq.com/w")) {
+            //歌单
+            music.parsePlayList(input);
+        } else if (!input.contains("http")) {
+            //搜索
+            music.search(input);
+        } else if (input.contains("n/yqq/song") || input.contains("/playsong.html")) {
+            //单曲
+            music.parseSong(input);
+        }
     }
 
     @Override

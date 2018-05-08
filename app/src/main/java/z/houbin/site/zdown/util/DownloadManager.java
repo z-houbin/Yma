@@ -34,16 +34,17 @@ public class DownloadManager {
                 .start();
     }
 
-    public void startDownload(final String url, String suffix) {
+    public int startDownload(final String url, String suffix) {
         String path = DownloadUtil.getDownloadPath(url, suffix);
         if (TextUtils.isEmpty(path)) {
             System.out.println("文件已经存在");
-            return;
+            return -2;
         }
         FileDownloader.getImpl().create(url)
                 .setPath(path)
                 .setListener(lis)
                 .start();
+        return 0;
     }
 
     public void startDownload(MusicInfo info, final String url, String suffix) {
@@ -141,7 +142,9 @@ public class DownloadManager {
 
     public interface DownloadStatusUpdater {
         void blockComplete(BaseDownloadTask task);
+
         void complete(BaseDownloadTask task);
+
         void update(BaseDownloadTask task);
     }
 }
