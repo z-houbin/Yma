@@ -112,16 +112,18 @@ public class Instagram extends BaseModule {
                             }
                             mInfo.author = media.getJSONObject("owner").getString("username");
                             List<String> picList = new ArrayList<>();
-                            JSONArray edges = media.getJSONObject("edge_sidecar_to_children").getJSONArray("edges");
-                            for (int i = 0; i < edges.length(); i++) {
-                                JSONObject edge = edges.getJSONObject(i);
-                                JSONObject node = edge.getJSONObject("node");
-                                JSONArray resources = node.getJSONArray("display_resources");
-                                JSONObject resource = resources.getJSONObject(resources.length() - 1);
-                                picList.add(resource.getString("src"));
-                            }
-                            if (picList.size() != 0) {
-                                mInfo.image.clear();
+                            if(media.has("edge_sidecar_to_children")){
+                                JSONArray edges = media.getJSONObject("edge_sidecar_to_children").getJSONArray("edges");
+                                for (int i = 0; i < edges.length(); i++) {
+                                    JSONObject edge = edges.getJSONObject(i);
+                                    JSONObject node = edge.getJSONObject("node");
+                                    JSONArray resources = node.getJSONArray("display_resources");
+                                    JSONObject resource = resources.getJSONObject(resources.length() - 1);
+                                    picList.add(resource.getString("src"));
+                                }
+                                if (picList.size() != 0) {
+                                    mInfo.image.clear();
+                                }
                             }
                             mInfo.image.addAll(picList);
                             metas.put("og:image", picList);
