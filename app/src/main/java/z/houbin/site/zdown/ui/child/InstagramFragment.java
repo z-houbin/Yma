@@ -42,6 +42,9 @@ public class InstagramFragment extends BaseFragment {
                 instagram.parse(getInput());
             } else if (getInput().startsWith("https://www.instagram.com/")) {
                 //个人主页
+                Intent intent = new Intent(getActivity(), InstagramWebActivity.class);
+                intent.putExtra("data",getInput());
+                startActivity(intent);
             }
         }
     }

@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:background="@android:color/white"
-        android:hint="输入 音乐/歌单地址/专辑地址"
+        android:hint="复制链接 下载图片\n复制个人主页网址 下载快拍"
         android:minHeight="150dp" />
 
     <LinearLayout

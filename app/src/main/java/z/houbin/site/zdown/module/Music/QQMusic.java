@@ -41,7 +41,6 @@ public class QQMusic extends MusicModule {
         headerBuilder.add("Host", "y.qq.com");
         headerBuilder.add("Content-Type", "application/x-www-form-urlencoded");
         headerBuilder.add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36");
-        headerBuilder.add("Referer", "http://y.qq.com");
         mHeaders = headerBuilder.build();
     }
 
@@ -71,6 +70,69 @@ public class QQMusic extends MusicModule {
             e.printStackTrace();
         }
         return super.getSongInfo(index);
+    }
+
+    public void parseSong(final String mInput) {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    String mid = "";
+                    String[] items = mInput.split("&");
+                    for (String item : items) {
+                        if (item.startsWith("songmid")) {
+                            mid = item.split("=")[1];
+                        }
+                    }
+                    String url = String.format(Locale.CHINA, "https://c.y.qq.com/v8/fcg-bin/fcg_play_single_song.fcg?songmid=%s&tpl=yqq_song_detail&format=jsonp&callback=getOneSongInfoCallback&g_tk=5381&jsonpCallback=getOneSongInfoCallback&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0", mid);
+                    Request request = new Request.Builder().get().url(url).headers(mHeaders).build();
+                    Response response = mClient.newCall(request).execute();
+                    String html = response.body().string();
+                    html = html.substring(html.indexOf("{"), html.length() - 1);
+                    JSONObject jsonObject = new JSONObject(html);
+                    JSONObject dataObject = jsonObject.getJSONArray("data").getJSONObject(0);
+                    MusicInfo info = new MusicInfo();
+                    try {
+                        JSONObject albumObject = dataObject.getJSONObject("album");
+                        info.albumid = albumObject.getString("id");
+                        info.albummid = albumObject.getString("mid");
+                        info.albumname = albumObject.getString("name");
+                        info.docid = dataObject.getString("id");
+                        info.pubtime = dataObject.getString("time_public");
+                        info.songId = dataObject.getString("id");
+                        info.songMid = dataObject.getString("mid");
+                        info.songName = dataObject.getString("name");
+
+                        JSONObject fileObject = dataObject.getJSONObject("file");
+                        info.size128 = fileObject.getLong("size_128mp3");
+                        info.size320 = fileObject.getLong("size_320mp3");
+                        info.sizeApe = fileObject.getLong("size_ape");
+                        info.sizeflac = fileObject.getLong("size_flac");
+                        info.sizeogg = fileObject.getLong("size_192ogg");
+
+                        JSONArray singerArray = dataObject.getJSONArray("singer");
+                        String singerName = "";
+                        for (int i = 0; i < singerArray.length(); i++) {
+                            JSONObject singerObject = singerArray.getJSONObject(i);
+                            singerName += singerObject.getString("name");
+                            if (i != singerArray.length() - 1) {
+                                singerName += "&";
+                            }
+                        }
+                        info.singerName = singerName;
+
+                        title = "单曲";
+                    } catch (JSONException e) {
+                        System.err.println("QQ音乐解析信息错误:" + e.getMessage());
+                    }
+                    musicInfos.add(info);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                onLoadEnd();
+            }
+        }.start();
     }
 
     @Override
@@ -160,23 +222,21 @@ public class QQMusic extends MusicModule {
                 final String URL_INFO = "http://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg?inCharset=utf8&outCharset=utf-8&albummid=%s";
                 String mInput = url;
                 String albummid = "";
-                if (mInput.contains("url.cn")) {
-                    try {
-                        Document document = Jsoup.connect(mInput).get();
-                        mInput = document.location();
-                        URL url = new URL(mInput);
-                        String[] querys = url.getQuery().split("&");
-                        for (String s : querys) {
-                            if (s.startsWith("albumId")) {
-                                albummid = s.split("=")[1];
-                                //https://y.qq.com/n/yqq/album/4018548_num.html
-                                mInput = String.format(Locale.CHINA, "https://y.qq.com/n/yqq/album/%s_num.html", albummid);
-                                break;
-                            }
+                try {
+                    Document document = Jsoup.connect(mInput).get();
+                    mInput = document.location();
+                    URL url = new URL(mInput);
+                    String[] querys = url.getQuery().split("&");
+                    for (String s : querys) {
+                        if (s.startsWith("albumId")) {
+                            albummid = s.split("=")[1];
+                            //https://y.qq.com/n/yqq/album/4018548_num.html
+                            mInput = String.format(Locale.CHINA, "https://y.qq.com/n/yqq/album/%s_num.html", albummid);
+                            break;
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 //手机QQ音乐专辑分享
                 try {
@@ -240,6 +300,7 @@ public class QQMusic extends MusicModule {
                     onLoadError(e);
                     return;
                 }
+                title = "专辑";
                 onLoadEnd();
             }
         }.start();
